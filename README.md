@@ -26,9 +26,9 @@
 
 Для того чтобы собрать и запустить проект необходимо:
 
-    1. Скомпилировать библиотеку Buddy
-        a. [Ссылка](https://sourceforge.net/projects/buddy/)
-        b. Собрать библиотеку `gcc -c -o liBuddy.o *.c`
-        c. Упаковать библиотеку `ar rcs liBuddy.a liBuddy.o`
-        e. Переместить полученный `liBuddy.a` в папку `lib`
-    2. Собрать проект `g++ -o main src/main.cpp -I./include -L./lib -lBuddy`
+1. Скомпилировать библиотеку Buddy
+    a. [Ссылка](https://sourceforge.net/projects/buddy/)
+    b. Собрать библиотеку `gcc -c -o liBuddy.o *.c`
+    c. Упаковать библиотеку `ar rcs liBuddy.a liBuddy.o`
+    e. Переместить полученный `liBuddy.a` в папку `lib`
+2. Собрать проект `g++ -o main src/main.cpp -I./include -L./lib -lBuddy`
