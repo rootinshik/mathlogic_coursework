@@ -20,6 +20,8 @@
 ├── lib
 │   └── libBuddy.a <- Собранная из исходников статическая библиотека Buddy
 ├── README.md
+├── results
+│   └── solutions.txt <- Результат вычислений
 └── src
     └── main.cpp <- Исходный код программы 
 ```
@@ -28,7 +30,7 @@
 
 1. Скомпилировать библиотеку Buddy
     1. Скачать библиотеку по [ссылке](https://sourceforge.net/projects/buddy/)
-    2. Собрать библиотеку `gcc -c -o liBuddy.o *.c`
-    3. Упаковать библиотеку `ar rcs liBuddy.a liBuddy.o`
-    4. Переместить полученный `liBuddy.a` в папку `lib`
+    2. Собрать библиотеку `gcc -c *.c` и `gcc -c *.cxx` 
+    3. Упаковать библиотеку `ar rcs libBuddy.a *.o`
+    4. Переместить полученный `libBuddy.a` в папку `lib`
 2. Собрать проект `g++ -o main src/main.cpp -I./include -L./lib -lBuddy`
