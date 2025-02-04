@@ -19,7 +19,7 @@
 ├── results
 │   └── solutions.txt <- Файл с итоговыми решениями
 └── src
-    ├── bdd_manager.cpp <-  
+    ├── bdd_manager.cpp <- Утилиты для работы с Buddy
     ├── constraints.cpp <- Ограничения для задачи Энштейна
     ├── main.cpp <- Главная часть программы
     └── output.cpp <- Функции для вывода решения (в файл и в консоль)

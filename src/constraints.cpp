@@ -37,7 +37,7 @@ void add_type2_constraints(bdd& task) {
     add_equivalence(0, 0, 1, 2);
 }
 
-// Ограничения 3 типа (левые соседи)
+// Ограничения 3 типа (соседи)
 void add_type3_constraints(bdd& task) {
     auto add_left_neighbor = [&](int current_k, int current_j, 
                                 int neighbor_k, int neighbor_j, 

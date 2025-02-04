@@ -7,7 +7,6 @@ int main() {
 
         bdd task = bddtrue;
 
-        // Добавление всех типов ограничений
         std::cout << "Adding type 1 constraints..." << std::endl;
         add_type1_constraints(task);
 
@@ -23,22 +22,18 @@ int main() {
         std::cout << "Adding general constraints..." << std::endl;
         add_general_constraints(task);
 
-        // Подсчет количества решений
         std::cout << "Calculating solutions..." << std::endl;
         double satcount = bdd_satcount(task);
         std::cout << "Found " << satcount << " solutions" << std::endl;
 
-        // Вывод информации о решениях
         out << satcount << " solutions:\n" << std::endl;
 
-        // Если решения существуют, выводим их
         if (satcount > 0) {
             std::cout << "Processing solutions..." << std::endl;
             bdd_allsat(task, solution_handler);
             std::cout << "All solutions processed" << std::endl;
         }
 
-        // Завершение работы
         std::cout << "Cleaning up..." << std::endl;
         cleanup_output();
         cleanup_bdd();
@@ -54,14 +49,12 @@ int main() {
     }
 }
 
-// Обработчик решений
 void solution_handler(char* varset, int size) {
     static int solution_count = 0;
     solution_count++;
 
     out << "Solution #" << solution_count << ":\n";
 
-    // Явно указываем тип функции
     std::function<void(char*, unsigned, unsigned)> build_solution = 
     [&](char* varset, unsigned n, unsigned I) {
         if (I == n-1) {
