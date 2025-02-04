@@ -3,27 +3,26 @@
 ### Структура проекта
 ```
 .
+.
 ├── bin
-│   └── main <- Исполняемый файл программы
-├── docs <- Документация (отчет о проделанной курсовой роботе)
+│   └── main <- Главный исполняемый файл
+├── docs <- Документы (Отчеты о курсовой)
+│   ├── ...
 ├── include
-│   └── buddy <- Заголовки библиотеки Buddy
-│       ├── bdd.h
-│       ├── bddtree.h
-│       ├── bvec.h
-│       ├── cache.h
-│       ├── config.h
-│       ├── fdd.h
-│       ├── imatrix.h
-│       ├── kernel.h
-│       └── prime.h
+│   ├── buddy <- Заголовочные файлы библиотеки Buddy
+│   │   └── ... 
+│   ├── config.h <- Инициализация для решения задачи
+│   └── ... <- Прочие заголовочные файлы для *.cpp из src
 ├── lib
-│   └── libBuddy.a <- Собранная из исходников статическая библиотека Buddy
-├── README.md
+│   └── libBuddy.a <- Собранная библиотека статическая бибилиотека Buddy
+├── README.md 
 ├── results
-│   └── solutions.txt <- Результат вычислений
+│   └── solutions.txt <- Файл с итоговыми решениями
 └── src
-    └── main.cpp <- Исходный код программы 
+    ├── bdd_manager.cpp <-  
+    ├── constraints.cpp <- Ограничения для задачи Энштейна
+    ├── main.cpp <- Главная часть программы
+    └── output.cpp <- Функции для вывода решения (в файл и в консоль)
 ```
 
 ### Для того чтобы собрать и запустить проект необходимо:
@@ -33,4 +32,15 @@
     2. Собрать библиотеку `gcc -c *.c` и `gcc -c *.cxx` 
     3. Упаковать библиотеку `ar rcs libBuddy.a *.o`
     4. Переместить полученный `libBuddy.a` в папку `lib`
-2. Собрать проект `g++ -o main src/main.cpp -I./include -L./lib -lBuddy`
+2. Собрать проект: 
+```
+g++ -o bin/main \
+                                      src/main.cpp \
+                                      src/bdd_manager.cpp \
+                                      src/constraints.cpp \
+                                      src/output.cpp \
+                                      -I./include \
+                                      -L./lib -lBuddy \
+                                      -std=c++17 \
+                                      -Wall -Wextra -Werror
+```
