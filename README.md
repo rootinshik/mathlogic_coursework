@@ -35,12 +35,12 @@
 2. Собрать проект: 
 ```
 g++ -o bin/main \
-                                      src/main.cpp \
-                                      src/bdd_manager.cpp \
-                                      src/constraints.cpp \
-                                      src/output.cpp \
-                                      -I./include \
-                                      -L./lib -lBuddy \
-                                      -std=c++17 \
-                                      -Wall -Wextra -Werror
+    src/main.cpp \
+    src/bdd_manager.cpp \
+    src/constraints.cpp \
+    src/output.cpp \
+    -I./include \
+    -L./lib -lBuddy \
+    -std=c++17 \
+    -Wall -Wextra -Werror
 ```

@@ -6,7 +6,8 @@ std::ofstream out;
 char var[N_VAR];
 
 void initialize_output() {
-    out.open("../results/solutions.txt");
+    // ИЗ_ЗА НЕПРАВИЛЬНОГО ПУТИ Я ПОТРАТИЛ 1.5 ЧАСА НА ДЕБАГ ДАЖЕ КОМИТ ОТКАТИЛ
+    out.open("./results/solutions.txt");
 }
 
 void cleanup_output() {
@@ -14,23 +15,22 @@ void cleanup_output() {
 }
 
 void print_solution() {
-    for (unsigned obj = 0; obj < N; obj++) {
-        out << "Object " << obj << ": ";
-        
-        for (unsigned prop = 0; prop < M; prop++) {
-            unsigned start_bit = obj * M * LOG_N + prop * LOG_N;
-            unsigned value = 0;
+    for (unsigned i = 0; i < N; i++) {
+        out << "Object " << i << ": ";
+        for (unsigned j = 0; j < M; j++) {
+            unsigned J = i * M * LOG_N + j * LOG_N;
+            unsigned num = 0;
             
-            for (unsigned bit = 0; bit < LOG_N; bit++) {
-                if (start_bit + bit >= N_VAR) {
-                    break;
-                }
-                value += (var[start_bit + bit] << bit);
+            if (J + LOG_N > N_VAR) {
+                continue;
             }
             
-            out << value << " ";
+            for (unsigned k = 0; k < LOG_N; k++) {
+                num |= (var[J + k] << k);
+            }
+            out << num << " ";
         }
         out << "\n";
     }
-    out << "\n";
+    out << std::endl;
 }
