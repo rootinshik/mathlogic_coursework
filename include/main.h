@@ -1,9 +1,15 @@
 #pragma once
 
 #include <functional>
-#include "../include/bdd_manager.h"
+#include <fstream>
+
 #include "../include/constraints.h"
-#include "../include/output.h"
 #include "../include/config.h"
 
-void solution_handler(char* varset, int size);
+std::ofstream out;
+char var[N_VAR];
+bdd p[M][N][N];
+
+void solution_handler(char*, int);
+void print_solution();
+void initialize_bdd();

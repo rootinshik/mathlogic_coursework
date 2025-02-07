@@ -3,7 +3,7 @@
 int main() {
     try {
         initialize_bdd();
-        initialize_output();
+        out.open("./results/solutions.txt");
 
         bdd task = bddtrue;
 
@@ -35,16 +35,16 @@ int main() {
         }
 
         std::cout << "Cleaning up..." << std::endl;
-        cleanup_output();
-        cleanup_bdd();
+        out.close();
+        bdd_done();
 
         std::cout << "Program completed successfully" << std::endl;
         return 0;
     }
     catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
-        cleanup_output();
-        cleanup_bdd();
+        out.close();
+        bdd_done();
         return 1;
     }
 }
@@ -79,4 +79,45 @@ void solution_handler(char* varset, int size) {
     };
 
     build_solution(varset, size, 0);
+}
+
+void print_solution() {
+    for (unsigned i = 0; i < N; i++) {
+        out << "Object " << i << ": ";
+        for (unsigned j = 0; j < M; j++) {
+            unsigned J = i * M * LOG_N + j * LOG_N;
+            unsigned num = 0;
+            
+            if (J + LOG_N > N_VAR) {
+                continue;
+            }
+            
+            for (unsigned k = 0; k < LOG_N; k++) {
+                num |= (var[J + k] << k);
+            }
+            out << num << " ";
+        }
+        out << "\n";
+    }
+    out << std::endl;
+}
+
+void initialize_bdd() {
+    bdd_init(100000, 10000);
+    bdd_setvarnum(N_VAR);
+    
+    unsigned I = 0;
+    for (unsigned i = 0; i < N; i++) {
+        for (unsigned j = 0; j < N; j++) {
+            for (int z = 0; z < M; z++) {
+                p[z][i][j] = bddtrue;
+                for (unsigned k = 0; k < LOG_N; k++) { // Инициализируем биты значения конкретного свойства
+                    ((j >> k) & 1) ? // Пробегаемся по всем битам
+                    p[z][i][j] &= bdd_ithvar(I + LOG_N*z + k) : 
+                    p[z][i][j] &= bdd_nithvar(I + LOG_N*z + k);
+                }
+            }
+        }
+        I += LOG_N*M; // идем к следующему обьекту
+    }
 }

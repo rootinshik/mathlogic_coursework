@@ -1,6 +1,4 @@
-#include "../include/bdd_manager.h" 
 #include "../include/constraints.h"
-#include <algorithm>
 
 const std::vector<int>& left_indices = {3,4,5,6,7,8};
 const std::vector<int>& right_indices = {3,4,6,7};
@@ -9,14 +7,16 @@ unsigned int right_delta = 2;
 
 // Ограничения 1 типа (фиксированные значения)
 void add_type1_constraints(bdd& task) {
-    task &= p[1][4][3];
+    // F := F ∧ p(k1, i1, j1)
+
+    // task &= p[1][4][3];
     task &= p[0][6][5];
-    task &= p[1][7][4];
-    task &= p[3][4][4];
+    // task &= p[1][7][4];
+    // task &= p[3][4][4];
     task &= p[2][7][4];
     task &= p[2][5][6];
     task &= p[2][6][0];
-    task &= p[3][7][0];
+    // task &= p[3][7][0];
     task &= p[3][8][7];
     task &= p[1][2][8];
     task &= p[2][4][1];
@@ -28,7 +28,8 @@ void add_type1_constraints(bdd& task) {
 void add_type2_constraints(bdd& task) {
     auto add_equivalence = [&](int k1, int j1, int k2, int j2) {
         for (int i = 0; i < N; i++) {
-            task &= !(p[k1][i][j1] ^ p[k2][i][j2]);
+            // F := F ∧ (p(k1, i, j1) ↔ p(k2, i, j2))
+            task &= !(p[k1][i][j1] ^ p[k2][i][j2]); // not XOR (истинно при совпадении)
         }
     };
 
@@ -44,24 +45,28 @@ void add_type2_constraints(bdd& task) {
 
 // Ограничения 3 типа (соседи)
 void add_type3_constraints(bdd& task) {
-    auto add_left_neighbor = [&](int current_k, int current_j, 
+    auto add_neighbor = [&](int current_k, int current_j, 
                                 int neighbor_k, int neighbor_j, 
                                 const std::vector<int>& indices, int delta) {
         for (int i = 0; i < N; i++) {
             if (std::find(indices.begin(), indices.end(), i) != indices.end()) {
-                task &= !(p[current_k][i][current_j] ^ p[neighbor_k][i - delta][neighbor_j]);
+                task &= !(p[current_k][i][current_j] ^ p[neighbor_k][i - delta][neighbor_j]); // not XOR (истинно при совпадении)
             } else {
-                task &= !p[current_k][i][current_j];
+                // Если соседа нет, то свойство не может принимать это значение!
+                task &= !p[current_k][i][current_j]; 
             }
         }
     };
 
     // TODO: Убрать дублирование
-    add_left_neighbor(0, 4, 2, 8, left_indices, left_delta);
-    add_left_neighbor(0, 7, 1, 1, right_indices, right_delta);
-    add_left_neighbor(3, 2, 0, 0, left_indices, left_delta);
-    add_left_neighbor(0, 0, 0, 3, right_indices, right_delta);
-    add_left_neighbor(0, 5, 1, 2, left_indices, left_delta);
+    add_neighbor(0, 4, 2, 8, left_indices, left_delta);
+    add_neighbor(0, 7, 1, 1, right_indices, right_delta);
+    add_neighbor(3, 2, 0, 0, left_indices, left_delta);
+    add_neighbor(0, 0, 0, 3, right_indices, right_delta);
+    add_neighbor(0, 5, 1, 2, left_indices, left_delta);
+
+    //
+    add_neighbor(3, 4, 3, 5, left_indices, left_delta);
 }
 
 // Ограничения 4 типа (левый ИЛИ правый сосед)
@@ -71,12 +76,12 @@ void add_type4_constraints(bdd& task) {
                            const std::vector<int>& left_indices, int left_delta,
                            const std::vector<int>& right_indices, int right_delta) {
         for (int i = 0; i < N; i++) {
-            bdd tmp = bddfalse;
+            bdd tmp = bddfalse; // Предпологаем, что по умолчанию ограничений нет
             bool has_neighbor = false;
 
             // Левый сосед
             if (std::find(left_indices.begin(), left_indices.end(), i) != left_indices.end()) {
-                tmp |= !(p[current_k][i][current_j] ^ p[neighbor_k][i - left_delta][neighbor_j]);
+                tmp |= !(p[current_k][i][current_j] ^ p[neighbor_k][i - left_delta][neighbor_j]); // not XOR (истинно при совпадении)
                 has_neighbor = true;
             }
 
@@ -87,9 +92,10 @@ void add_type4_constraints(bdd& task) {
             }
 
             if (has_neighbor) {
-                task &= tmp;
+                task &= tmp; // Обьединяем ограничения
             } else {
-                task &= !p[current_k][i][current_j];
+                // Если соседа нет, то свойство не может принимать это значение!
+                task &= !p[current_k][i][current_j]; 
             }
         }
     };
@@ -107,7 +113,7 @@ void add_general_constraints(bdd& task) {
         for (int i = 0; i < N; i++) {
             for (int j = i+1; j < N; j++) {
                 for (int z = 0; z < N; z++) {
-                    task &= (p[k][i][z] >> !p[k][j][z]);
+                    task &= (p[k][i][z] >> !p[k][j][z]); // Импликация 
                 }
             }
         }
@@ -118,7 +124,7 @@ void add_general_constraints(bdd& task) {
         for (int j = 0; j < M; j++) {
             bdd tmp = bddfalse;
             for (int z = 0; z < N; z++) {
-                tmp |= p[j][i][z];
+                tmp |=  p[j][i][z]; // Хотя бы для одного есть свойство
             }
             task &= tmp;
         }
